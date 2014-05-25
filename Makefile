@@ -8,6 +8,13 @@ PASS:=$(shell pwgen -s -1 16)
 DATA_DIR:=/tmp/mariadb
 PORT:=127.0.0.1:3306
 
+# Checking if use docker with boot2docker.
+ifeq ($(shell uname -s),Darwin)
+	PORT:=0.0.0.0:3306
+else
+	PORT:=127.0.0.1:3306
+endif
+
 RUNNING:=$(shell docker ps | grep $(NAME) | cut -f 1 -d ' ')
 ALL:=$(shell docker ps -a | grep $(NAME) | cut -f 1 -d ' ')
 DOCKER_RUN_COMMON=--name="$(NAME)" -p $(PORT):3306 -v $(DATA_DIR):/data -e USER="$(USER)" -e PASS="$(PASS)" $(DOCKER_USER)/mariadb
